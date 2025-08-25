@@ -37,13 +37,12 @@ export async function GET(request: NextRequest) {
       facebookAccounts: oauthAccounts.map(acc => ({
         id: acc.id,
         provider: acc.provider,
-        hasToken: !!acc.token,
-        tokenLength: acc.token ? acc.token.length : 0
+        verified: acc.verification?.status === 'verified'
       })),
       allExternalAccounts: user.externalAccounts.map(acc => ({
         provider: acc.provider,
         id: acc.id,
-        hasToken: !!acc.token
+        verified: acc.verification?.status === 'verified'
       })),
       timestamp: new Date().toISOString()
     };

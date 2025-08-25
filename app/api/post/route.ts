@@ -44,8 +44,7 @@ export async function POST(request: NextRequest) {
     console.log('🔗 [BACKEND] Facebook OAuth accounts found:', oauthAccounts.length);
     console.log('🔗 [BACKEND] OAuth accounts details:', oauthAccounts.map(acc => ({
       provider: acc.provider,
-      id: acc.id,
-      hasToken: !!acc.token
+      id: acc.id
     })));
 
     if (oauthAccounts.length === 0) {
@@ -56,64 +55,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get the Facebook access token
-    const facebookAccount = oauthAccounts[0];
-    console.log('🎫 [BACKEND] Facebook account details:', {
-      id: facebookAccount.id,
-      provider: facebookAccount.provider,
-      hasToken: !!facebookAccount.token
-    });
-    
-    const accessToken = facebookAccount.token;
-    console.log('🔑 [BACKEND] Access token available:', !!accessToken);
+    // For now, we'll return an error since getting OAuth tokens requires additional setup
+    // In a production environment, you would need to use Clerk's OAuth token management
+    console.log('❌ [BACKEND] OAuth token access not implemented in this version');
+    return NextResponse.json(
+      { error: 'Facebook posting is not yet implemented. Please use the Python backend for posting functionality.' }, 
+      { status: 501 }
+    );
 
-    if (!accessToken) {
-      console.log('❌ [BACKEND] Facebook access token not available');
-      return NextResponse.json(
-        { error: 'Facebook access token not available' }, 
-        { status: 400 }
-      );
-    }
 
-    // Post to Facebook using Graph API
-    console.log('📤 [BACKEND] Making request to Facebook Graph API...');
-    const facebookUrl = 'https://graph.facebook.com/v18.0/me/feed';
-    console.log('🌐 [BACKEND] Facebook API URL:', facebookUrl);
-    
-    const facebookResponse = await fetch(facebookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        message: message,
-        access_token: accessToken,
-      }),
-    });
-
-    console.log('📥 [BACKEND] Facebook API response received');
-    console.log('📊 [BACKEND] Facebook response status:', facebookResponse.status);
-    console.log('📊 [BACKEND] Facebook response ok:', facebookResponse.ok);
-
-    const facebookData = await facebookResponse.json();
-    console.log('📄 [BACKEND] Facebook API response data:', facebookData);
-
-    if (!facebookResponse.ok) {
-      console.error('❌ [BACKEND] Facebook API error:', facebookData);
-      return NextResponse.json(
-        { error: 'Failed to post to Facebook. Please check your permissions.' }, 
-        { status: 400 }
-      );
-    }
-
-    console.log('✅ [BACKEND] Facebook post successful!');
-    console.log('🆔 [BACKEND] Post ID:', facebookData.id);
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Post published successfully!',
-      postId: facebookData.id,
-    });
 
   } catch (error) {
     console.error('💥 [BACKEND] Error posting to Facebook:', error);
