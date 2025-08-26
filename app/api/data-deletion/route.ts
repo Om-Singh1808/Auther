@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // In production, you'd verify the signed_request
 
     const baseUrl = getBaseUrl();
-    const privacyUrl = `${baseUrl}/privacy`;
+    const privacyUrl = `${baseUrl}/privacy-policy.html`;
 
     return NextResponse.json({
       url: privacyUrl,
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   // Return data deletion instructions
   const baseUrl = getBaseUrl();
-  const privacyUrl = `${baseUrl}/privacy`;
+  const privacyUrl = `${baseUrl}/privacy-policy.html`;
   
   return NextResponse.json({
     data_deletion_url: privacyUrl,
