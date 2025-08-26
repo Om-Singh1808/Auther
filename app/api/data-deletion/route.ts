@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Get the base URL from environment or use a fallback
+const getBaseUrl = () => {
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+  return 'http://localhost:3000';
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -9,8 +20,11 @@ export async function POST(request: NextRequest) {
     // For now, we'll return a basic response
     // In production, you'd verify the signed_request
 
+    const baseUrl = getBaseUrl();
+    const privacyUrl = `${baseUrl}/privacy`;
+
     return NextResponse.json({
-      url: 'http://localhost:3000/privacy',
+      url: privacyUrl,
       confirmation_code: '123456789'
     });
 
@@ -21,8 +35,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   // Return data deletion instructions
+  const baseUrl = getBaseUrl();
+  const privacyUrl = `${baseUrl}/privacy`;
+  
   return NextResponse.json({
-    data_deletion_url: 'http://localhost:3000/privacy',
+    data_deletion_url: privacyUrl,
     access_token: 'sample_access_token'
   });
 }
